@@ -1,6 +1,8 @@
+import gc
 import os
 import sys
 import threading
+from collections import OrderedDict
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data")
@@ -112,10 +114,37 @@ window.addEventListener("pywebviewready", async () => fill(await pywebview.api.l
 </script></body></html>"""
 
 
+MAX_LOADED_MODELS = 6
+
+
+def package_models(translation):
+    from argostranslate.translate import CachedTranslation, CompositeTranslation, PackageTranslation
+    if isinstance(translation, CachedTranslation):
+        return package_models(translation.underlying)
+    if isinstance(translation, CompositeTranslation):
+        return package_models(translation.t1) + package_models(translation.t2)
+    if isinstance(translation, PackageTranslation):
+        return [translation]
+    return []
+
+
 class Api:
     def __init__(self):
         self._lock = threading.Lock()
         self._langs = None
+        self._loaded = OrderedDict()
+
+    def _touch(self, translation):
+        for model in package_models(translation):
+            self._loaded.pop(id(model), None)
+            self._loaded[id(model)] = model
+        evicted = False
+        while len(self._loaded) > MAX_LOADED_MODELS:
+            _, model = self._loaded.popitem(last=False)
+            model.translator = None
+            evicted = True
+        if evicted:
+            gc.collect()
 
     def _load(self):
         if self._langs is None:
@@ -147,7 +176,9 @@ class Api:
             translation = langs[source].get_translation(langs[target])
             if translation is None:
                 return {"text": "", "error": "אין תרגום בין שתי השפות האלה."}
-            return {"text": translation.translate(text), "detected": detected}
+            result = translation.translate(text)
+            self._touch(translation)
+            return {"text": result, "detected": detected}
 
 
 TITLE = "תרגום אופליין"
