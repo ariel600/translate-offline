@@ -33,11 +33,13 @@ SetupIconFile=assets\icon.ico
 [Languages]
 Name: "he"; MessagesFile: "compiler:Languages\Hebrew.isl"
 
+#include "dist\languages.iss"
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "{#SourceDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceDir}\*"; DestDir: "{app}"; Excludes: "\data\share\argos-translate\packages\*"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: lang_en
 Source: "LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "THIRD-PARTY-NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\redist\MicrosoftEdgeWebView2RuntimeInstallerX64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: NeedsWebView2

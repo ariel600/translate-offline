@@ -29,7 +29,7 @@ foreach ($dll in "msvcp140.dll", "msvcp140_1.dll", "msvcp140_2.dll", "vcruntime1
     $src = Join-Path "$env:SystemRoot\System32" $dll
     if (Test-Path $src) { Copy-Item $src "$Target\python\" -Force }
 }
-Copy-Item "$PSScriptRoot\app.py", "$PSScriptRoot\assets\icon.ico" $Target -Force
+Copy-Item "$PSScriptRoot\app.py", "$PSScriptRoot\languages.py", "$PSScriptRoot\assets\icon.ico" $Target -Force
 
 Write-Host "[4/5] Downloading language models..."
 $data = "$Target\data"
@@ -52,6 +52,7 @@ if ($Installer) {
     }
     $iscc = @("$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe", "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
     if (-not $iscc) { throw "Inno Setup 6 not found. Install it with: winget install JRSoftware.InnoSetup" }
+    & $py "$PSScriptRoot\installer_languages.py" $Target "$PSScriptRoot\dist\languages.iss"
     & $iscc "/DSourceDir=$Target" "$PSScriptRoot\installer.iss"
     Write-Host "Installer ready in $PSScriptRoot\dist"
 }

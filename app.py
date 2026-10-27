@@ -5,6 +5,7 @@ import threading
 from collections import OrderedDict
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, ROOT)
 DATA = os.path.join(ROOT, "data")
 os.environ.update({
     "HOME": DATA,
@@ -24,21 +25,9 @@ if sys.stderr is None:
 import webview
 from langdetect import DetectorFactory, detect
 
-DetectorFactory.seed = 0
+from languages import LANGUAGE_NAMES
 
-LANGUAGE_NAMES = {
-    "ar": "ערבית", "az": "אזרית", "bg": "בולגרית", "bn": "בנגלית", "ca": "קטלאנית",
-    "cs": "צ'כית", "da": "דנית", "de": "גרמנית", "el": "יוונית", "en": "אנגלית",
-    "eo": "אספרנטו", "es": "ספרדית", "et": "אסטונית", "eu": "בסקית", "fa": "פרסית",
-    "fi": "פינית", "fr": "צרפתית", "ga": "אירית", "gl": "גליסית", "he": "עברית",
-    "hi": "הינדי", "hu": "הונגרית", "id": "אינדונזית", "it": "איטלקית", "ja": "יפנית",
-    "ko": "קוריאנית", "ky": "קירגיזית", "lt": "ליטאית", "lv": "לטבית", "ms": "מלאית",
-    "nb": "נורווגית", "nl": "הולנדית", "pb": "פורטוגזית (ברזיל)", "pl": "פולנית",
-    "pt": "פורטוגזית", "ro": "רומנית", "ru": "רוסית", "sk": "סלובקית", "sl": "סלובנית",
-    "sq": "אלבנית", "sv": "שוודית", "sw": "סווהילית", "th": "תאית", "tl": "טגלוג",
-    "tr": "טורקית", "uk": "אוקראינית", "ur": "אורדו", "vi": "וייטנאמית",
-    "zh": "סינית", "zt": "סינית (מסורתית)",
-}
+DetectorFactory.seed = 0
 
 HTML = r"""<!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8"><style>

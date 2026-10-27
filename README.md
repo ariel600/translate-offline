@@ -10,6 +10,7 @@ It runs as a regular desktop window, with no browser, no local server and no ope
 - A Hebrew right-to-left interface with automatic language detection, live translation while you type, a swap button and copy-to-clipboard.
 - All languages available in Argos Translate, around 50. It translates between any two of them, pivoting through English when needed.
 - A single offline installer that needs no administrator rights and no internet on the target computer.
+- Choose languages during setup. The installer shows a checklist in Hebrew alphabetical order and installs only the selected languages. English is always installed, because translations pivot through it.
 
 ## Requirements
 
@@ -45,6 +46,8 @@ The installer bundles the Microsoft Edge WebView2 Runtime and the Visual C++ run
 | File | Purpose |
 |---|---|
 | `app.py` | The desktop app: Hebrew UI and translation through Argos Translate |
+| `languages.py` | Hebrew language names and the languages preselected in the installer |
+| `installer_languages.py` | Generates the installer's language checklist from the downloaded models |
 | `build.ps1` | Builds the portable folder and, with `-Installer`, the setup files |
 | `download-models.py` | Downloads Argos Translate language models |
 | `installer.iss` | Inno Setup script for the installer |
